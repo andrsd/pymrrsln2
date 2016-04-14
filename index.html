@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="pymrrsln2 : Two-aspect signaling for model railroads using LocoNet">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>pymrrsln2</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/andrsd/pymrrsln2">View on GitHub</a>
+
+          <h1 id="project_title">pymrrsln2</h1>
+          <h2 id="project_tagline">Two-aspect signaling for model railroads using LocoNet</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/andrsd/pymrrsln2/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/andrsd/pymrrsln2/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+      <p>This page describes how to build simple 2-aspect signaling on small model railroads using Digitrax LocoNet.  The concept described here
+      can be probably extended to larger layouts, but the maintenance might become more difficult and thus <a href="http://jmri.sourceforge.net/">JMRI</a>
+      should be probably used instead.</p>
+
+      <h3>Description of the system</h3>
+      <p>By two aspect signaling, we understand to use just green and red aspects on the signal (with obvious meanings: red = stop, green = go).
+        The system described here behaves very simply: when a train enters a block, the signals that guard this block turn red and when the train leaves
+        the block, the signals go green.  To guard all blocks that are in the direction of travel, we would need to know this direction.  That however poses
+        some difficulties which we are not going to deal with in this project.</p>
+
+      <p>In order to accomplish this, all we need to know is when a train enters a guarded block. That can be achieved by block occupancy detector which will
+        send a message to LocoNet. We need to respond to this message by changing the aspects, i.e. a link between blocks and signal head needs to be created.
+        Such the link is stored in a signaling file that we will describe later. This is all that is required from the user to use this system.<p/>
+
+      <p>The hardware components needed for this system are:</p>
+      <ul>
+        <li><a href="http://www.digitrax.com/products/computer-control/pr3xtra/">Digitrax PR3XTRA</a></li>
+        <li>Machine that has an USB port that can act as a serial port, for example
+          <a href="https://www.raspberrypi.org/products/pi-zero/">Raspberry Pi Zero</a>. The machine has to be able to run
+          <a href="https://www.python.org/">python</a>.</li>
+        <li><a href="http://www.digitrax.com/products/detection-signaling/se8c/">SE8c</a> configured for signaling and all signals physically connected</li>
+      </ul>
+
+      <h3>Signaling file</h3>
+      <p>Signaling file is a simple text file that describes the behavior of signals on the layout. It has the following format:</p>
+      <pre>
+  NUM_ASPECTS = 4
+
+  SIGNALS = {
+    BlockID : {
+      SENSOR_HI : {
+        SignalHeadID : SignalAspect,
+        SignalHeadID : SignalAspect,
+        ...
+      },
+      SENSOR_LO : {
+        SignalHeadID : SignalAspect,
+        SignalHeadID : SignalAspect,
+        ...
+      }
+    },
+    BlockID : {
+      SENSOR_HI : {
+        SignalHeadID : SignalAspect,
+        ...
+      },
+      SENSOR_LO : {
+        SignalHeadID : SignalAspect,
+        ...
+      }
+    },
+    ...
+  }</pre>
+      <p>where <code>BlockID</code> is a number corresponding to the block occupancy detector (on SE8c it would be from 1 - 8), <code>SignalHeadId</code> is
+        the number of signal head (on SE8c it would be from 1 - 32) and <code>SignalAspect</code> is either <code>RED</code> or <code>GREEN</code>. The
+        <code>SENSOR_HI</code> and <code>SENSOR_LO</code> correspond to the the event of a train entering or leaving the guarded block, respectively.
+
+      <h3>Configuration file</h3>
+      <p>Configuration file sets up the serial connection between the computer and LocoNet. It looks like this:</p>
+      <pre>
+    port = {
+      'device'    : '/dev/ttyACM0',
+      'baud_rate' : 57600
+    }</pre>
+      <p>where device needs to be set to the name of the serial port (on Windows something like 'COM1').</p>
+
+      <h3>Tips &amp; tricks</h3>
+      <ul>
+        <li>If you decide to run on a linux, create a dedicated user for the running the python script. Let this user to autologin on a virtual terminal
+        and start the script on login (via <code>.bash_profile</code> or so)</li>
+      </ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">pymrrsln2 maintained by <a href="https://github.com/andrsd">andrsd</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+
+
+  </body>
+</html>
