@@ -1,0 +1,18 @@
+# serial port configuration
+port = {
+  # Linux
+  #'device'    : '/dev/ttyACM0',
+  #'baud_rate' : 57600
+
+  # Mac OS X
+  # 'device'    : '/dev/tty.usbmodem1421',
+  # 'baud_rate' : 57600
+
+  # Windows
+  # 'device'    : 'COM1',
+  # 'baud_rate' : 57600
+
+  # Fake
+  # 'device'    : None,
+  # 'file'      : 'data'
+}

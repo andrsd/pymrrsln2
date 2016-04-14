@@ -1,0 +1,30 @@
+# Needs to match the setting in SE8c
+NUM_ASPECTS = 4
+
+SIGNALS = {
+  # block detection ID
+  1 : {
+    # occupied
+    SENSOR_HI : {
+      # set signal head 3 to RED
+      3 : RED,
+    },
+    # not occupied
+    SENSOR_LO : {
+      # set signal head 3 to GREEN
+      3 : GREEN,
+    }
+  },
+  # block detection ID
+  2 : {
+    SENSOR_HI : {
+      # set signal head 4 and 16 to RED
+       4 : RED,
+      16 : RED
+    },
+    SENSOR_LO : {
+       4 : GREEN,
+      16 : GREEN
+    }
+  },
+}
