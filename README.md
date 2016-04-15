@@ -59,3 +59,9 @@ Configuring Signals
 		  },
 		}
 		```
+
+Monitoring LocoNet
+------------------
+
+If you want to monitor the messages on LocoNet, you can use the `monitor.py` script. You can see the raw messages if you run it with `--raw` flag. This can
+serve as verification that your setup and serial connection works correctly before you run `signals.py`.
