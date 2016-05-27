@@ -51,6 +51,14 @@ def set_aspect(head_id, aspect):
       state2 = pymrrsln2.LocoNet.SWITCH_THROWN
     ln.set_switch_state(sid + 0, state1)
 
+def str_sensor_state(state):
+  if state == pymrrsln2.LocoNet.SENSOR_HI:
+    return "HI"
+  elif state == pymrrsln2.LocoNet.SENSOR_LO:
+    return "LO"
+  else:
+    return "Unknown"
+
 '''
 Use the signal definition to set the signal heads
 
@@ -58,6 +66,8 @@ Use the signal definition to set the signal heads
 @param sensor_state Reported state of the occupancy (HI for occupied, LO for not occupied)
 '''
 def do_signaling(blk_id, sensor_state):
+  if args.debug:
+    print("Block", blk_id, ", state =", str_sensor_state(sensor_state));
   if (blk_id) in SIGNALS:
     if sensor_state == pymrrsln2.LocoNet.SENSOR_LO:
       aspect = pymrrsln2.LocoNet.SIGNAL_GREEN
