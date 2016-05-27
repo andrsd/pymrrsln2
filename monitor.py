@@ -19,6 +19,14 @@ cmdline.add_argument("-c", "--config", help="Use config file")
 cmdline.add_argument("--raw", help="Do not decode LocoNet messages, print them in raw format", action="store_true")
 args = cmdline.parse_args()
 
+def str_state(state):
+  if state == pymrrsln2.LocoNet.SENSOR_HI:
+    return "HI"
+  elif state == pymrrsln2.LocoNet.SENSOR_LO:
+    return "LO"
+  else:
+    return "Unknown"
+
 def recv(msg):
   print(time.strftime("%H:%M:%S") + " : ", end='')
   if args.raw:
@@ -31,7 +39,7 @@ def recv(msg):
     elif msg['type'] == pymrrsln2.LocoNet.MSG_SWITCH_STATE:
       print("Switch id = " + str(msg['id']) + ", state = " + str(msg['state']))
     elif msg['type'] == pymrrsln2.LocoNet.MSG_SENSOR_STATE:
-      print("Sensor id = " + str(msg['id']) + ", state = " + str(msg['state'] == pymrrsln2.LocoNet.SENSOR_HI))
+      print("Sensor id = " + str(msg['id']) + ", state = " + str_state(msg['state']))
     else:
       print("Unknown message")
 
