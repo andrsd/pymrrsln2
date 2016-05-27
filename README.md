@@ -1,3 +1,5 @@
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](https://andrsd.mit-license.org/)
+
 pymrrsln2
 ==========
 
