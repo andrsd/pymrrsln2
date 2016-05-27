@@ -30,6 +30,11 @@
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
+      <div style="margin-top: 50px; text-align: center; height: 330px">
+        <img src="images/img-green.jpg" width="450px" style="display: inline-block; margin-left: auto; margin-right: auto" />
+        <img src="images/img-red.jpg"   width="450px" style="display: inline-block; margin-left: auto; margin-right: auto" />
+      </div>
+
       <section id="main_content" class="inner">
       <p>This page describes how to build simple 2-aspect signaling on small model railroads using Digitrax LocoNet.  The concept described here
       can be probably extended to larger layouts, but the maintenance might become more difficult and thus <a href="http://jmri.sourceforge.net/">JMRI</a>
@@ -60,33 +65,27 @@
   NUM_ASPECTS = 4
 
   SIGNALS = {
-    BlockID : {
-      SENSOR_HI : {
-        SignalHeadID : SignalAspect,
-        SignalHeadID : SignalAspect,
-        ...
-      },
-      SENSOR_LO : {
-        SignalHeadID : SignalAspect,
-        SignalHeadID : SignalAspect,
-        ...
-      }
-    },
-    BlockID : {
-      SENSOR_HI : {
-        SignalHeadID : SignalAspect,
-        ...
-      },
-      SENSOR_LO : {
-        SignalHeadID : SignalAspect,
-        ...
-      }
-    },
+    BlockID : [ SignalHeadID, SignalHeadID, ... ],
+    BlockID : [ SignalHeadID, ... ],
     ...
   }</pre>
-      <p>where <code>BlockID</code> is a number corresponding to the block occupancy detector (on SE8c it would be from 1 - 8), <code>SignalHeadId</code> is
-        the number of signal head (on SE8c it would be from 1 - 32) and <code>SignalAspect</code> is either <code>RED</code> or <code>GREEN</code>. The
-        <code>SENSOR_HI</code> and <code>SENSOR_LO</code> correspond to the the event of a train entering or leaving the guarded block, respectively.
+      <p>where <code>BlockID</code> is a number corresponding to the block occupancy detector (starting from 0), <code>SignalHeadID</code> is
+        the number of signal head (starting from 0).</p>
+
+      <h4>Obtaining BlockID</h4>
+      <p>To get the <code>BlockID</code> number, run <code>signals.py --debug 1</code> (make sure you setup the <code>config</code> file). Then place
+        your locomotive on the layout into the detection block. You should see a message like:</p>
+        <pre>Block 0 , state = HI</pre>
+        <p>When you remove the locomotive, you should see:</p>
+        <pre>Block 0 , state = LO</pre>
+
+      <h4>Obtaining SignalHeadID</h4>
+      <p>To get the <code>SignalHeadID</code>, you need to find out which switch ID controls the signal head. On SE8c in default configuration
+        these numbers start from 257. Use your throttle to find the switch number, then use this formula:</p>
+        <pre>SignalHeadID = (SwitchID - 257) / 2</pre>
+        <p>and round the number down.</p>
+
+      <p>With SE8c configured for 4-aspect signalling, there are 2 switch IDs corresponding to one signal head. This setup will work with this project.</p>
 
       <h3>Configuration file</h3>
       <p>Configuration file sets up the serial connection between the computer and LocoNet. It looks like this:</p>
@@ -112,8 +111,6 @@
         <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-
-
 
   </body>
 </html>
