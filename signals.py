@@ -21,12 +21,12 @@ args = cmdline.parse_args()
 '''
 Set the aspect on a signal head
 
-@param head_id Signal head ID to be changed (1-based indexing)
+@param head_id Signal head ID to be changed (0-based indexing)
 @param aspect New aspect to be set
 '''
 def set_aspect(head_id, aspect):
   # get the switch ID
-  sid = 257 + ((head_id - 1) * NUM_ASPECTS / 2)
+  sid = 257 + (head_id * NUM_ASPECTS / 2)
 
   if (NUM_ASPECTS == 2):
     # 2 aspect signaling
@@ -50,7 +50,6 @@ def set_aspect(head_id, aspect):
       state1 = pymrrsln2.LocoNet.SWITCH_THROWN
       state2 = pymrrsln2.LocoNet.SWITCH_THROWN
     ln.set_switch_state(sid + 0, state1)
-    ln.set_switch_state(sid + 1, state2)
 
 '''
 Use the signal definition to set the signal heads
@@ -59,13 +58,15 @@ Use the signal definition to set the signal heads
 @param sensor_state Reported state of the occupancy (HI for occupied, LO for not occupied)
 '''
 def do_signaling(blk_id, sensor_state):
-  # Users use 1-based indexing for block IDs
-  if (blk_id + 1) in SIGNALS:
-    sensor = SIGNALS[blk_id + 1]
-    if sensor_state in sensor:
-      heads = sensor[sensor_state]
-      for h in heads:
-        set_aspect(h, heads[h])
+  if (blk_id) in SIGNALS:
+    if sensor_state == pymrrsln2.LocoNet.SENSOR_LO:
+      aspect = pymrrsln2.LocoNet.SIGNAL_GREEN
+    else:
+      aspect = pymrrsln2.LocoNet.SIGNAL_RED
+
+    heads = SIGNALS[blk_id]
+    for h in heads:
+      set_aspect(h, aspect)
 
 '''
 Receiver callback
