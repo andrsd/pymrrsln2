@@ -36,29 +36,37 @@ Configuring Signals
 	```
 
 * Copy `signals.example` to `signals` and edit it to match your layout.
-	- For each detection block (indexed from one), you will need to specify what signal heads will go `GREEN` when a train enters the block (i.e. `SENSOR_HI`),
-	and what signal heads will go `RED` when train leaves the block (i.e. `SENSOR_LO`).
-	- Signal heads are also indexed from one, single SE8c can provide 32 heads.
+	- For each detection block (indexed from zero), you will need to specify a list of heads that guard this block
+	- Signal heads are also indexed from zero, single SE8c can provide 32 heads.
 	- Match the number of aspects in the signaling file to what ever your SE8c is set to
 	- Simple example of the signaling file:
 		```
 		NUM_ASPECTS = 4
 
 		SIGNALS = {
-		  # block detection ID
-		  2 : {
-		    SENSOR_HI : {
-		      # set signal head 4 and 16 to RED
-		       4 : RED,
-		      16 : RED
-		    },
-		    SENSOR_LO : {
-		       4 : GREEN,
-		      16 : GREEN
-		    }
-		  },
+		  2 : [ 4, 16 ]
 		}
 		```
+* If you want to find out the block IDs that go into your `signals` file, run the script with `--debug 1`. Then place a locomotive
+  on your layout into a detection block and you should see a message like:
+	```
+	Block 0 , state = HI
+	```
+  When you remove the locomotive, you should see:
+	```
+	Block 0 , state = LO
+	```
+
+* To find out the signal head IDs.
+	- For a single SE8c in default configuration, the switch IDs that control the signals start form 257, i.e. if you throw
+	  or close switch 257 (and there is a signal head connected there), you should see the aspect changing.
+	- If you know the switch ID, then use this formula:
+		```
+		head ID = (switch_ID - 257) / 2
+		```
+		Round the number down.
+	- Then `head ID` goes into the `signals` file.
+
 
 Monitoring LocoNet
 ------------------
